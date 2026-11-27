@@ -96,7 +96,67 @@ classDiagram
     Item <|-- CD
 ```
  
-Ce diagramme suit le code. GitHub l'affiche directement ; pour le prévisualiser dans l'IDE : extension *Markdown Preview Mermaid Support* dans VS Code, option Mermaid des réglages Markdown dans IntelliJ.
+## Diagramme refactorisé avec le patron Visitor
+
+Les éditions ne sont plus codées dans `Book` et `CD` (la méthode `print()` disparaît) : chacune devient un visiteur concret. `Item` ne connaît que `accept(v)`, et chaque sous-classe appelle `v.visit(this)` : c'est le *double dispatch*, qui choisit la bonne méthode `visit` sans `instanceof`.
+
+```mermaid
+classDiagram
+    class Mediatheque {
+        +addItem(i : Item)
+        +accept(v : Visitor)
+        +printCatalog()
+        +printOnlyBooks()
+        +printOnlyCDs()
+    }
+    class Item {
+        <<abstract>>
+        -title : String
+        +accept(v : Visitor)*
+        +toString() String
+    }
+    class Book {
+        -author : String
+        +accept(v : Visitor)
+        +toString() String
+    }
+    class CD {
+        -numberOfTracks : int
+        +accept(v : Visitor)
+        +toString() String
+    }
+    class Visitor {
+        <<interface>>
+        +visit(b : Book)
+        +visit(c : CD)
+    }
+    class CatalogPrinter {
+        +visit(b : Book)
+        +visit(c : CD)
+    }
+    class BookPrinter {
+        +visit(b : Book)
+        +visit(c : CD)
+    }
+    class CDPrinter {
+        +visit(b : Book)
+        +visit(c : CD)
+    }
+    Mediatheque "1" *--> "*" Item : -items
+    Item <|-- Book
+    Item <|-- CD
+    Visitor <|.. CatalogPrinter
+    Visitor <|.. BookPrinter
+    Visitor <|.. CDPrinter
+    Item ..> Visitor : accept
+    Mediatheque ..> Visitor : crée et utilise
+```
+
+- `Mediatheque.accept(v)` parcourt les items et appelle `i.accept(v)` sur chacun.
+- `printCatalog()`, `printOnlyBooks()`, `printOnlyCDs()` se contentent de `accept(new CatalogPrinter())`, `accept(new BookPrinter())`, `accept(new CDPrinter())`.
+- Pour ajouter une nouvelle édition, il suffit d'écrire un nouveau visiteur, sans toucher à `Item`, `Book` ni `CD`.
+
+Le diagramme de départ suit le code d'origine. GitHub l'affiche directement ; pour le prévisualiser dans l'IDE : extension *Markdown Preview Mermaid Support* dans VS Code, option Mermaid des réglages Markdown dans IntelliJ.
  
 ## 3. Travailler
  
