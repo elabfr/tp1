@@ -9,24 +9,23 @@ public class Mediatheque {
 	public void addItem(Item i) {
 		items.add(i);
 	}
-	
-	public void printCatalog() {
+
+	/** Fait visiter chaque item de la médiathèque par le visiteur v. */
+	public void accept(Visitor v) {
 		for (Item i : items)
-			i.print();
+			i.accept(v);
 	}
-	
+
+	public void printCatalog() {
+		accept(new CatalogPrinter());
+	}
+
 	public void printOnlyBooks() {
-		throw new UnsupportedOperationException("Not supported yet."); 
-		/*
-		//avec instanceof
-		for (Item i : items)
-			if (i instanceof Book)
-				System.out.println(i);
-		*/
+		accept(new BookPrinter());
 	}
 
 	public void printOnlyCDs() {
-		throw new UnsupportedOperationException("Not supported yet."); 
+		accept(new CDPrinter());
 	}
 
 }

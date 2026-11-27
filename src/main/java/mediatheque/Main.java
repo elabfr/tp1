@@ -9,8 +9,12 @@ public class Main {
         // Mon livre et mon album préférés
         mediatheque.addItem( new Book("Albert Camus", "L'Étranger"));
         mediatheque.addItem( new CD(10, "Random Access Memories"));
+
+        System.out.println("=== Catalogue complet ===");
         mediatheque.printCatalog();
-        //mediatheque.printOnlyBooks();
-        //mediatheque.printOnlyCDs();
+        System.out.println("\n=== Livres seulement ===");
+        mediatheque.printOnlyBooks();
+        System.out.println("\n=== CD seulement ===");
+        mediatheque.printOnlyCDs();
     }
 }

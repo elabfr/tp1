@@ -10,15 +10,20 @@ public abstract class Item {
 	public String getTitle() {
 		return title;
 	}
+
 	public void setTitle(String title) {
 		this.title = title;
 	}
 
-	public abstract void print();
+	/**
+	 * Accepte un visiteur. Chaque sous-classe appelle la méthode visit()
+	 * qui lui correspond (double dispatch) : plus besoin de tester le type de l'item.
+	 */
+	public abstract void accept(Visitor v);
 
 	@Override
 	public String toString() {
 		return title;
 	}
-	
+
 }
